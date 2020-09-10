@@ -1,9 +1,9 @@
 {
-  "name": "xhr file upload with content-range",
+  "name": "xhr chunked file upload with content-range",
   "version": "1.0.0",
   "description": "demo project",
   "keywords": [],
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "fs": "0.0.1-security",
     "http": "0.0.1-security"
@@ -13,9 +13,7 @@
     "node": ">=8.11.2"
   },
   "scripts": {
-    "prepare": "npm rebuild && echo 'NPM dependencies rebuilt!'",
-    "start": "gulp",
-    "test": "jest-webpack"
+    "prepare": "npm rebuild && echo 'NPM dependencies rebuilt!'"
   },
   "private": true
 }
