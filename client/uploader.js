@@ -7,9 +7,9 @@ const uploader = {
         console.log(xhr);
         alert('fail');
     },
-    uploadChunk(chunk, location, isresume) {
+    uploadChunk(chunk, location) {
         const xhr = new XMLHttpRequest();
-        xhr.overrideMimeType('text/plain');
+        // xhr.overrideMimeType('text/plain');
         xhr.upload.onerror = this.onFileUploadError.bind(this, xhr);
         xhr.onload = this.isChunkUploaded.bind(this, xhr, location);
         // Upload the first chunk
@@ -40,10 +40,10 @@ const uploader = {
         const SIZE = this.item.file.size;
         const start = this.item.chunkId * this.BYTES_PER_CHUNK;
         let end = start + this.BYTES_PER_CHUNK;
-        if(end > SIZE) {
+        if (end > SIZE) {
             end = SIZE;
         }
-        if(start > end) {
+        if (start > end) {
             displayProgress('No more chunks left, completed!')
             return;
         }
