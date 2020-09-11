@@ -1,7 +1,7 @@
 const uploader = {
     BYTES_PER_CHUNK: 1024 * 512,
     reader: new FileReader(),
-    item: {file: null, chunkId: 0, start: 0, end: 0},
+    item: {file: null, chunkId: 0, start: 0, end: 0, chunkData: null, retryTimes: 0},
 
     onFileUploadError(xhr) {
         console.log('xhr.upload.onerror triggered: file upload failed!', xhr);
@@ -21,17 +21,24 @@ const uploader = {
         if (request.readyState === 4 && request.status === 200) {
             displayProgress(`chunk ${this.item.chunkId} uploaded to ${location}`);
             //read next chunk
-            ++this.item.chunkId;
+            this.item.chunkId++;
+            this.item.retryTimes = 0;
             this.readChunk();
         } else  {
             displayProgress(`uploading chunk ${this.item.chunkId} failed!`);
+            if (this.item.retryTimes < 3) {
+                this.item.retryTimes++;
+                displayProgress(`retry upload chunk ${this.item.chunkId} for the ${this.item.retryTimes} time.`);
+                uploader.uploadChunk(this.item.chunkData, '/', false);
+            }
         }
     },
     readAndUploadChunkRecursively(file) {
         this.item.file = file;
         this.reader.onload = function (e) {
             displayProgress(`chunk ${this.item.chunkId} read to memory.`);
-            uploader.uploadChunk(e.target.result, '/', false);
+            this.item.chunkData = e.target.result;
+            uploader.uploadChunk(this.item.chunkData, '/', false);
         }.bind(this);
         this.readChunk()
     },
