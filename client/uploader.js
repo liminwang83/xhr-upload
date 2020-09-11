@@ -1,11 +1,10 @@
 const uploader = {
-    BYTES_PER_CHUNK: 1024 * 256,
+    BYTES_PER_CHUNK: 1024 * 512,
     reader: new FileReader(),
     item: {file: null, chunkId: 0, start: 0, end: 0},
 
     onFileUploadError(xhr) {
-        console.log(xhr);
-        alert('fail');
+        console.log('xhr.upload.onerror triggered: file upload failed!', xhr);
     },
     uploadChunk(chunk, location) {
         const xhr = new XMLHttpRequest();
@@ -15,7 +14,7 @@ const uploader = {
         // Upload the first chunk
         xhr.open('PUT', location, true);
         xhr.setRequestHeader('Content-Range', `bytes ${this.item.start}-${this.item.end-1}/${this.item.file.size}`);
-        console.log('Content-Range', `bytes ${this.item.start}-${this.item.end-1}/${this.item.file.size}`)
+        console.log('Content-Range', `bytes ${this.item.start}-${this.item.end-1}/${this.item.file.size}`);
         xhr.send(chunk);
     },
     isChunkUploaded(request, location) {
@@ -25,12 +24,12 @@ const uploader = {
             ++this.item.chunkId;
             this.readChunk();
         } else  {
-            console.log(request.readyState, request);
+            displayProgress(`uploading chunk ${this.item.chunkId} failed!`);
         }
     },
     readAndUploadChunkRecursively(file) {
         this.item.file = file;
-        this.reader.onload = function(e) {
+        this.reader.onload = function (e) {
             displayProgress(`chunk ${this.item.chunkId} read to memory.`);
             uploader.uploadChunk(e.target.result, '/', false);
         }.bind(this);
@@ -44,7 +43,7 @@ const uploader = {
             end = SIZE;
         }
         if (start > end) {
-            displayProgress('No more chunks left, completed!')
+            displayProgress('No more chunks left, completed!');
             return;
         }
         this.item.start = start;
@@ -56,9 +55,7 @@ const uploader = {
 
 function readSingleFile(e) {
   const file = e.target.files[0];
-  if (!file) {
-    return;
-  }
+  if (!file) return;
   uploader.readAndUploadChunkRecursively(file);
 }
 
