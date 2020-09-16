@@ -1,0 +1,15 @@
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+    width: 500px;
+    align-items: baseline;
+    align-content: flex-start;
+}
+.label {
+    flex: 1 10 100px;
+}
+.input {
+    flex: 3 30 100px;
+    border-radius: 5px;
+}

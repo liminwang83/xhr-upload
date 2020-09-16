@@ -28,6 +28,12 @@ const server = http.createServer((request, response) => {
             });
             const readStream = fs.createReadStream("./client/uploader.js");
             readStream.pipe(response);
+        } else if (url.endsWith('.css')) {
+            response.writeHead(200, {
+                'content-type': 'text/css'
+            });
+            const readStream = fs.createReadStream("./client/style.css");
+            readStream.pipe(response);
         } else if (url === '/favicon.ico') {
             response.writeHead(200, {
                 'content-type': 'image/png'
